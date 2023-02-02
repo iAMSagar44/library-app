@@ -1,7 +1,28 @@
 import React from 'react';
 import { ReturnBook } from './ReturnBook';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 export const Carousel = () => {
+
+    const [books, setBooks] = useState([]);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const baseURI = "http://localhost:8080/api/books";
+        const fetchURI = `${baseURI}?page=0&size=9`;
+
+        axios.get(fetchURI)
+            .then(response => {
+                console.log(response.data)
+                setBooks(response.data);
+            })
+            .catch(error => {
+                setError(error.message);
+            });
+
+    }, []);
+
     return (
         <div className='container mt-5' style={{ height: 550 }}>
             <div className='homepage-carousel-title'>
