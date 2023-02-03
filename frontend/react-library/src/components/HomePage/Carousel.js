@@ -46,7 +46,7 @@ export const Carousel = () => {
                             <div className='carousel-item active'>
                                 <div className='row d-flex justify-content-center align-items-center'>
                                     {
-                                        books.slice(0, 3).map((book) =>
+                                        books.content.slice(0, 3).map((book) =>
                                             <ReturnBook key={book.id} book={book} />
                                         )
                                     }
@@ -55,7 +55,7 @@ export const Carousel = () => {
                             <div className='carousel-item'>
                                 <div className='row d-flex justify-content-center align-items-center'>
                                     {
-                                        books.slice(3, 6).map((book) =>
+                                        books.content.slice(3, 6).map((book) =>
                                             <ReturnBook key={book.id} book={book} />
                                         )
                                     }
@@ -65,7 +65,7 @@ export const Carousel = () => {
                             <div className='carousel-item'>
                                 <div className='row d-flex justify-content-center align-items-center'>
                                     {
-                                        books.slice(6, 9).map((book) =>
+                                        books.content.slice(6, 9).map((book) =>
                                             <ReturnBook key={book.id} book={book} />
                                         )
                                     }
@@ -95,7 +95,7 @@ export const Carousel = () => {
                     <>
                         <div className='d-lg-none mt-3'>
                             <div className='row d-flex justify-content-center align-items-center'>
-                                <ReturnBook key={books[7].id} book={books[7]} />
+                                <ReturnBook key={books.content[7].id} book={books.content[7]} />
                             </div>
                         </div>
                         <div className='homepage-carousel-title mt-3'>
