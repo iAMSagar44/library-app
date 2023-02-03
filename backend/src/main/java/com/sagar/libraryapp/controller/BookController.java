@@ -5,6 +5,7 @@ import com.sagar.libraryapp.service.BookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class BookController {
     }
 
     @GetMapping("/books")
-    public List<Book> getAllBooksWithPagination(@RequestParam(value = "page") int page, @RequestParam(value = "size") int size){
+    public Page<Book> getAllBooksWithPagination(@RequestParam(value = "page") int page, @RequestParam(value = "size") int size){
         return bookService.getBooksPageable(page,size);
     }
 

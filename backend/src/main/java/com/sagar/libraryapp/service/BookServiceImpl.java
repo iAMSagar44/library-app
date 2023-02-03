@@ -5,6 +5,7 @@ import com.sagar.libraryapp.repository.BookRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -28,10 +29,10 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public List<Book> getBooksPageable(int page, int size) {
+    public Page<Book> getBooksPageable(int page, int size) {
         PageRequest pr = PageRequest.of(page, size);
-        List<Book> bookList = bookRepository.findAll(pr).getContent();
-        LOGGER.info("{} books were retrieved.", bookList.size());
+        Page<Book> bookList = bookRepository.findAll(pr);
+        LOGGER.info("{} of {} books were retrieved.", bookList.getNumberOfElements(), bookList.getTotalElements());
         return bookList;
     }
 

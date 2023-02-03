@@ -1,12 +1,13 @@
 package com.sagar.libraryapp.service;
 
 import com.sagar.libraryapp.model.Book;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface BookService {
     List<Book> getBooks();
-    List<Book> getBooksPageable(int page, int size);
+    Page<Book> getBooksPageable(int page, int size);
     Optional<Book> getBook(long id);
 }
