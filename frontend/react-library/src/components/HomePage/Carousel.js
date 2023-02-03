@@ -1,5 +1,6 @@
 import React from 'react';
 import { ReturnBook } from './ReturnBook';
+import { SpinnerLoading } from '../Utils/SpinnerLoading';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -7,6 +8,7 @@ export const Carousel = () => {
 
     const [books, setBooks] = useState(null);
     const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const baseURI = "http://localhost:8080/api/books";
@@ -16,9 +18,11 @@ export const Carousel = () => {
             .then(response => {
                 console.log(response.data)
                 setBooks(response.data);
+                setIsLoading(false);
             })
             .catch(error => {
                 setError(error.message);
+                setIsLoading(false);
             });
 
     }, []);
@@ -29,15 +33,15 @@ export const Carousel = () => {
                 <h3>Find your next "I stayed up too late reading" book.</h3>
             </div>
             {
-                (!books) &&
-                <p>Loading......</p>
+                (isLoading) &&
+                <SpinnerLoading />
             }
             <div id='carouselExampleControls' className='carousel carousel-dark slide mt-5 
                 d-none d-lg-block' data-bs-interval='false'>
 
                 {/* Desktop */}
                 {
-                    (books) && (
+                    (!isLoading) && (
                         <div className='carousel-inner'>
                             <div className='carousel-item active'>
                                 <div className='row d-flex justify-content-center align-items-center'>
@@ -87,11 +91,11 @@ export const Carousel = () => {
 
             {/* Mobile */}
             {
-                (books) && (
+                (!isLoading) && (
                     <>
                         <div className='d-lg-none mt-3'>
                             <div className='row d-flex justify-content-center align-items-center'>
-                                <ReturnBook key={books[0].id} book={books[0]} />
+                                <ReturnBook key={books[7].id} book={books[7]} />
                             </div>
                         </div>
                         <div className='homepage-carousel-title mt-3'>
