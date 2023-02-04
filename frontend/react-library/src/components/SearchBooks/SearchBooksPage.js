@@ -3,16 +3,18 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { SearchBook } from "./SearchBook";
 import { SpinnerLoading } from "../Utils/SpinnerLoading";
+import { Pagination } from "./Pagination";
 
 export const SearchBooksPage = () => {
 
     const [books, setBooks] = useState(null);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(0);
 
     useEffect(() => {
         const baseURI = "http://localhost:8080/api/books";
-        const fetchURI = `${baseURI}?page=0&size=5`;
+        const fetchURI = `${baseURI}?page=${currentPage}&size=5`;
 
         axios.get(fetchURI)
             .then(response => {
@@ -100,6 +102,7 @@ export const SearchBooksPage = () => {
                         )
                     }
                 </div>
+                <Pagination currentPage={currentPage} totalPages={books.totalPages}/>
             </div>
         </div>
     )
