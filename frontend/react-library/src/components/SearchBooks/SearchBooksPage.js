@@ -95,14 +95,18 @@ export const SearchBooksPage = () => {
                                 </p>
                                 {
                                     books.content.map(book => (
-                                        <SearchBook key={book.id} book={book}/>
+                                        <SearchBook key={book.id} book={book} />
                                     ))
                                 }
                             </>
                         )
                     }
                 </div>
-                <Pagination currentPage={currentPage} totalPages={books.totalPages}/>
+                {
+                    (!isLoading) && (
+                        <Pagination currentPage={currentPage} totalPages={books.totalPages} />
+                    )
+                }
             </div>
         </div>
     )
