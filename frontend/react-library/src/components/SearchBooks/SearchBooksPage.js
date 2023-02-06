@@ -12,7 +12,13 @@ export const SearchBooksPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(0);
 
+    const onPageChange = (pageNumber) => {
+        console.log("The page being requested is ....", pageNumber);
+        setCurrentPage(pageNumber);
+    }
+
     useEffect(() => {
+        console.log("Use Effect hook  is running ...")
         const baseURI = "http://localhost:8080/api/books";
         const fetchURI = `${baseURI}?page=${currentPage}&size=5`;
 
@@ -27,7 +33,7 @@ export const SearchBooksPage = () => {
                 setIsLoading(false);
             });
 
-    }, []);
+    }, [currentPage]);
 
     return (
         <div>
@@ -79,6 +85,13 @@ export const SearchBooksPage = () => {
                                 </ul>
                             </div>
                         </div>
+                        <div className='col-2'>
+                            {
+                                (!isLoading) && (
+                                    <Pagination currentPage={currentPage} totalPages={books.totalPages} handlePageChange={onPageChange} />
+                                )
+                            }
+                        </div>
                     </div>
                     {
                         (isLoading) &&
@@ -88,10 +101,10 @@ export const SearchBooksPage = () => {
                         (!isLoading) && (
                             <>
                                 <div className='mt-3'>
-                                    <h5>Number of results: ({books.totalElements})</h5>
+                                    <h5>Number of results: {books.totalElements}</h5>
                                 </div>
                                 <p>
-                                    1 to {books.numberOfElements} of {books.totalElements} items:
+                                    {books.pageable.offset + 1} to {books.numberOfElements + (books.pageable.offset)} of {books.totalElements} items:
                                 </p>
                                 {
                                     books.content.map(book => (
@@ -104,7 +117,7 @@ export const SearchBooksPage = () => {
                 </div>
                 {
                     (!isLoading) && (
-                        <Pagination currentPage={currentPage} totalPages={books.totalPages} />
+                        <Pagination currentPage={currentPage} totalPages={books.totalPages} handlePageChange={onPageChange} />
                     )
                 }
             </div>
