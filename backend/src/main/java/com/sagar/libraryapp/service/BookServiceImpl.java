@@ -37,6 +37,15 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
+    public Page<Book> getBooksByTitle(String title, int page, int size) {
+        PageRequest pr = PageRequest.of(page, size);
+        LOGGER.info("The Title being requested is: {}", title);
+        Page<Book> bookList = bookRepository.findByTitleContaining(title,pr);
+        LOGGER.info("{} of {} books were retrieved.", bookList.getNumberOfElements(), bookList.getTotalElements());
+        return bookList;
+    }
+
+    @Override
     public Optional<Book> getBook(long id) {
         LOGGER.info("The book id being retrieved is:: {}", id);
         return bookRepository.findById(id);

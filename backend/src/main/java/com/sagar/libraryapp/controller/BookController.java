@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @CrossOrigin(origins = "http://localhost:3000/")
 @RestController
 @RequestMapping("/api")
@@ -22,8 +20,11 @@ public class BookController {
     }
 
     @GetMapping("/books")
-    public Page<Book> getAllBooksWithPagination(@RequestParam(value = "page") int page, @RequestParam(value = "size") int size){
-        return bookService.getBooksPageable(page,size);
+    public Page<Book> getAllBooksWithPagination(@RequestParam(value = "page") int page, @RequestParam(value = "size") int size,
+                                                @RequestParam (value = "title", required = false) String title){
+
+        if(title == null) return bookService.getBooksPageable(page, size);
+        return bookService.getBooksByTitle(title, page, size);
     }
 
     @GetMapping("/books/{id}")
