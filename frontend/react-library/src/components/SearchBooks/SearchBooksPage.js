@@ -85,13 +85,6 @@ export const SearchBooksPage = () => {
                                 </ul>
                             </div>
                         </div>
-                        <div className='col-2'>
-                            {
-                                (!isLoading) && (
-                                    <Pagination currentPage={currentPage} totalPages={books.totalPages} handlePageChange={onPageChange} />
-                                )
-                            }
-                        </div>
                     </div>
                     {
                         (isLoading) &&
