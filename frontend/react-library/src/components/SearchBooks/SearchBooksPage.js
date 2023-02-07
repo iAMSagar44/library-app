@@ -32,7 +32,7 @@ export const SearchBooksPage = () => {
                 setError(error.message);
                 setIsLoading(false);
             });
-
+            window.scroll(0,0);
     }, [currentPage]);
 
     return (
