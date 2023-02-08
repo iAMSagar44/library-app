@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class BookController {
     private final BookService bookService;
     private static final Logger LOGGER = LoggerFactory.getLogger(BookController.class);
+
     @Autowired
     public BookController(BookService bookService) {
         this.bookService = bookService;
@@ -21,14 +22,19 @@ public class BookController {
 
     @GetMapping("/books")
     public Page<Book> getAllBooksWithPagination(@RequestParam(value = "page") int page, @RequestParam(value = "size") int size,
-                                                @RequestParam (value = "title", required = false) String title){
+                                                @RequestParam(value = "title", required = false) String title,
+                                                @RequestParam(value = "category", required = false) String category) {
 
-        if(title == null) return bookService.getBooksPageable(page, size);
-        return bookService.getBooksByTitle(title, page, size);
+        if (title == null && category == null) {
+            return bookService.getBooksPageable(page, size);
+        } else if (category == null) {
+            return bookService.getBooksByTitle(title, page, size);
+        }
+        return bookService.getBooksByCategory(category, page, size);
     }
 
     @GetMapping("/books/{id}")
-    public Book getBook(@PathVariable long id){
+    public Book getBook(@PathVariable long id) {
         return bookService.getBook(id).orElseThrow(() -> new RuntimeException("Book not found"));
     }
 }

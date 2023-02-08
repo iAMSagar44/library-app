@@ -11,5 +11,7 @@ public interface BookService {
     Page<Book> getBooksPageable(int page, int size);
     Page<Book> getBooksByTitle(String title, int page, int size);
 
+    Page<Book> getBooksByCategory(String category, int page, int size);
+
     Optional<Book> getBook(long id);
 }

@@ -13,6 +13,7 @@ export const SearchBooksPage = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [title, setTitle] = useState('');
     const [text, setText] = useState('');
+    const [category, setCategory] = useState('Category');
 
     const onPageChange = (pageNumber) => {
         console.log("The page being requested is ....", pageNumber);
@@ -22,7 +23,11 @@ export const SearchBooksPage = () => {
     useEffect(() => {
         console.log("Use Effect hook  is running ...")
         const baseURI = "http://localhost:8080/api/books";
-        const fetchURI = (title.trim() === '' ? `${baseURI}?page=${currentPage}&size=5` : `${baseURI}?page=${currentPage}&size=5&title=${title}`);
+        let fetchURI = (title.trim() === '' ? `${baseURI}?page=${currentPage}&size=5` : `${baseURI}?page=${currentPage}&size=5&title=${title}`);
+        if (category !== 'All' && category !== 'Category') {
+            console.log("Category is::", category);
+            fetchURI = `${baseURI}?page=${currentPage}&size=5&category=${category}`;
+        }
 
         axios.get(fetchURI)
             .then(response => {
@@ -35,10 +40,15 @@ export const SearchBooksPage = () => {
                 setIsLoading(false);
             });
         window.scroll(0, 0);
-    }, [currentPage, title]);
+    }, [currentPage, title, category]);
 
     const handleSubmit = () => {
         setTitle(text);
+        setCurrentPage(0);
+    }
+
+    const handleCategoryChange = (data) => {
+        setCategory(data);
         setCurrentPage(0);
     }
 
@@ -76,34 +86,14 @@ export const SearchBooksPage = () => {
                                 <button className='btn btn-secondary dropdown-toggle' type='button'
                                     id='dropdownMenuButton1' data-bs-toggle='dropdown'
                                     aria-expanded='false'>
-                                    Category
+                                    {category}
                                 </button>
                                 <ul className='dropdown-menu' aria-labelledby='dropdownMenuButton1'>
-                                    <li>
-                                        <a className='dropdown-item' href='#'>
-                                            All
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a className='dropdown-item' href='#'>
-                                            Front End
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a className='dropdown-item' href='#'>
-                                            Back End
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a className='dropdown-item' href='#'>
-                                            Data
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a className='dropdown-item' href='#'>
-                                            DevOps
-                                        </a>
-                                    </li>
+                                    <li className='dropdown-item' onClick={() => handleCategoryChange('All')}>All</li>
+                                    <li className='dropdown-item' onClick={() => handleCategoryChange('FE')}>Front End</li>
+                                    <li className='dropdown-item' onClick={() => handleCategoryChange('BE')}>Back End</li>
+                                    <li className='dropdown-item' onClick={() => handleCategoryChange('Data')}>Data</li>
+                                    <li className='dropdown-item' onClick={() => handleCategoryChange('DevOps')}>DevOps</li>
                                 </ul>
                             </div>
                         </div>
