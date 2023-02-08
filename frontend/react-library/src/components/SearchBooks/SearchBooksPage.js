@@ -122,16 +122,26 @@ export const SearchBooksPage = () => {
                                     {(books.totalElements === 0) ? books.pageable.offset : books.pageable.offset + 1} to {books.numberOfElements + (books.pageable.offset)} of {books.totalElements} items:
                                 </p>
                                 {
-                                    books.content.map(book => (
-                                        <SearchBook key={book.id} book={book} />
-                                    ))
+                                    ((books.totalElements === 0)) && (
+                                        <div className="m-5">
+                                            <h3>Can't find what you are looking for?</h3>
+                                            <button type="button" className="btn main-color btn-md px-4 me-md-2 fw-bold text-white">Library Services</button>
+                                        </div>
+                                    )
+                                }
+                                {
+                                    (books.totalElements > 0) && (
+                                        books.content.map(book => (
+                                            <SearchBook key={book.id} book={book} />
+                                        ))
+                                    )
                                 }
                             </>
                         )
                     }
                 </div>
                 {
-                    (!isLoading) && (
+                    (!isLoading && (books.totalElements > 0)) && (
                         <Pagination currentPage={currentPage} totalPages={books.totalPages} handlePageChange={onPageChange} />
                     )
                 }
