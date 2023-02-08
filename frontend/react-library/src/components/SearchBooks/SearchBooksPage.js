@@ -11,6 +11,8 @@ export const SearchBooksPage = () => {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(0);
+    const [title, setTitle] = useState('');
+    const [text, setText] = useState('');
 
     const onPageChange = (pageNumber) => {
         console.log("The page being requested is ....", pageNumber);
@@ -20,7 +22,7 @@ export const SearchBooksPage = () => {
     useEffect(() => {
         console.log("Use Effect hook  is running ...")
         const baseURI = "http://localhost:8080/api/books";
-        const fetchURI = `${baseURI}?page=${currentPage}&size=5`;
+        const fetchURI = (title.trim() === '' ? `${baseURI}?page=${currentPage}&size=5` : `${baseURI}?page=${currentPage}&size=5&title=${title}`);
 
         axios.get(fetchURI)
             .then(response => {
@@ -32,19 +34,39 @@ export const SearchBooksPage = () => {
                 setError(error.message);
                 setIsLoading(false);
             });
-            window.scroll(0,0);
-    }, [currentPage]);
+        window.scroll(0, 0);
+    }, [currentPage, title]);
+
+    const handleSubmit = () => {
+        setTitle(text);
+        setCurrentPage(0);
+    }
 
     return (
         <div>
             <div className='container'>
                 <div>
                     <div className='row mt-5'>
-                        <div className='col-6'>
+                        <div className='col-8'>
                             <div className='d-flex'>
-                                <input className='form-control me-2' type='search'
-                                    placeholder='Search' aria-labelledby='Search' />
-                                <button className='btn btn-outline-success'>
+                                <input className='form-control me-2' type='text'
+                                    placeholder='Search' aria-labelledby='Search'
+                                    value={text} onChange={(e) => setText(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            handleSubmit();
+                                        }
+                                    }} />
+                                {
+                                    (text.trim() !== '') &&
+                                    <button className="btn btn-outline-secondary me-2" type="button"
+                                        onClick={() => {
+                                            setTitle('');
+                                            setText('');
+                                            setCurrentPage(0);
+                                        }}>Clear</button>
+                                }
+                                <button className='btn btn-outline-success' onClick={handleSubmit}>
                                     Search
                                 </button>
                             </div>
@@ -97,7 +119,7 @@ export const SearchBooksPage = () => {
                                     <h5>Number of results: {books.totalElements}</h5>
                                 </div>
                                 <p>
-                                    {books.pageable.offset + 1} to {books.numberOfElements + (books.pageable.offset)} of {books.totalElements} items:
+                                    {(books.totalElements === 0) ? books.pageable.offset : books.pageable.offset + 1} to {books.numberOfElements + (books.pageable.offset)} of {books.totalElements} items:
                                 </p>
                                 {
                                     books.content.map(book => (
