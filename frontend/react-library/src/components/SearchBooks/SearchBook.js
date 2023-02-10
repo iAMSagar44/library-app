@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import image from '../../Images/BooksImages/book-luv2code-1000.png';
 
 export const SearchBook = ({ book }) => {
@@ -53,9 +54,9 @@ export const SearchBook = ({ book }) => {
                     </div>
                 </div>
                 <div className='col-md-4 d-flex justify-content-center align-items-center'>
-                    <a className='btn btn-md main-color text-white' href='#'>
+                    <Link className='btn btn-md main-color text-white' to={`/books/checkout/${book.id}`}>
                         View Details
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div>

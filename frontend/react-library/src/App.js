@@ -2,6 +2,7 @@ import './App.css';
 import { Navbar } from './components/Navbar';
 import { HomePage } from './components/HomePage/HomePage';
 import { SearchBooksPage } from './components/SearchBooks/SearchBooksPage';
+import { BookCheckoutPage } from './components/BookCheckoutPage/BookCheckoutPage';
 import { Footer } from './components/Footer';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
@@ -14,6 +15,7 @@ function App() {
           <Route path='/' element={<Navigate to='/home' />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/searchbooks" element={<SearchBooksPage />} />
+          <Route path="/books/checkout/:id" element={<BookCheckoutPage />} />
         </Routes>
       </div>
       <Footer />
