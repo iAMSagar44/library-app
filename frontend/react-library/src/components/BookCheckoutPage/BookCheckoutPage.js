@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { SpinnerLoading } from "../Utils/SpinnerLoading";
+import { StarReviews } from "../Utils/StarReviews";
 import image from '../../Images/BooksImages/book-luv2code-1000.png';
 
 export const BookCheckoutPage = () => {
@@ -52,6 +53,7 @@ export const BookCheckoutPage = () => {
                                         <h2>{book.title}</h2>
                                         <h5 className='text-primary'>{book.author}</h5>
                                         <p className='lead'>{book.description}</p>
+                                        <StarReviews rating={4.5} size={32}/>
                                     </div>
                                 </div>
                             </div>
@@ -71,6 +73,7 @@ export const BookCheckoutPage = () => {
                                     <h2>{book.title}</h2>
                                     <h5 className='text-primary'>{book.author}</h5>
                                     <p className='lead'>{book.description}</p>
+                                    <StarReviews rating={4.5} size={32}/>
                                 </div>
                             </div>
                             <hr />
