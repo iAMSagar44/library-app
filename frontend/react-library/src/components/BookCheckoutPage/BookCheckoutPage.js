@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { SpinnerLoading } from "../Utils/SpinnerLoading";
 import { StarReviews } from "../Utils/StarReviews";
+import { CheckoutAndReviewBox } from "./CheckoutAndReviewBox";
 import image from '../../Images/BooksImages/book-luv2code-1000.png';
 
 export const BookCheckoutPage = () => {
@@ -56,6 +57,7 @@ export const BookCheckoutPage = () => {
                                         <StarReviews rating={4.5} size={32}/>
                                     </div>
                                 </div>
+                                <CheckoutAndReviewBox mobile={false} book={book} />
                             </div>
                             <hr />
                         </div>
@@ -76,6 +78,7 @@ export const BookCheckoutPage = () => {
                                     <StarReviews rating={4.5} size={32}/>
                                 </div>
                             </div>
+                            <CheckoutAndReviewBox mobile={true} book={book} />
                             <hr />
                         </div>
                     </>
