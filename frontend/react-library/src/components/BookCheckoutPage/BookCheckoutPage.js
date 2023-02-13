@@ -8,6 +8,7 @@ import image from '../../Images/BooksImages/book-luv2code-1000.png';
 
 export const BookCheckoutPage = () => {
     const [book, setBook] = useState(null);
+    const [review, setReview] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -16,12 +17,20 @@ export const BookCheckoutPage = () => {
         const bookID = (window.location.pathname).split('/')[3];
         const baseURI = "http://localhost:8080/api/books";
         const fetchURI = (`${baseURI}/${bookID}`);
+        const reviewURI = (`${baseURI}/reviews/${bookID}`);
         axios.get(fetchURI)
             .then(response => {
-                console.log(response.data)
+                console.log("Response from the 1st service call", response.data)
                 setBook(response.data);
                 setIsLoading(false);
+                return axios.get(reviewURI);
             })
+            .then(
+                response => {
+                    console.log("Response from the 2nd service call", response.data)
+                    setReview(response.data);
+                }
+            )
             .catch(error => {
                 setError(error.message);
                 setIsLoading(false);
@@ -54,7 +63,16 @@ export const BookCheckoutPage = () => {
                                         <h2>{book.title}</h2>
                                         <h5 className='text-primary'>{book.author}</h5>
                                         <p className='lead'>{book.description}</p>
-                                        <StarReviews rating={4.5} size={32}/>
+                                        {
+                                            (review && review.rating > 0) ? (
+                                                <StarReviews rating={review.rating} size={32} />
+                                            ) : (
+                                                <>
+                                                    <StarReviews rating={0} size={32} />
+                                                    <h6 className='text-secondary'>No reviews for this book yet.</h6>
+                                                </>
+                                            )
+                                        }
                                     </div>
                                 </div>
                                 <CheckoutAndReviewBox mobile={false} book={book} />
@@ -75,7 +93,16 @@ export const BookCheckoutPage = () => {
                                     <h2>{book.title}</h2>
                                     <h5 className='text-primary'>{book.author}</h5>
                                     <p className='lead'>{book.description}</p>
-                                    <StarReviews rating={4.5} size={32}/>
+                                    {
+                                        (review && review.rating > 0) ? (
+                                            <StarReviews rating={review.rating} size={32} />
+                                        ) : (
+                                            <>
+                                                <StarReviews rating={0} size={32} />
+                                                <h6 className='text-secondary'>No reviews for this book yet.</h6>
+                                            </>
+                                        )
+                                    }
                                 </div>
                             </div>
                             <CheckoutAndReviewBox mobile={true} book={book} />
