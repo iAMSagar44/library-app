@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ReviewServiceImpl implements ReviewService{
     private final ReviewRepository reviewRepository;
@@ -18,7 +20,7 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
-    public Review retrieveReviewsByBookId(long bookId) {
+    public List<Review> retrieveReviewsByBookId(long bookId) {
         LOGGER.info("Reviews for Book ID --- {}", bookId);
         return reviewRepository.findByBookId(bookId);
     }
