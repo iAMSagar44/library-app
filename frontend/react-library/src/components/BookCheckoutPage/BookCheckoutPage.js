@@ -8,9 +8,11 @@ import image from '../../Images/BooksImages/book-luv2code-1000.png';
 
 export const BookCheckoutPage = () => {
     const [book, setBook] = useState(null);
-    const [review, setReview] = useState(null);
+    const [review, setReview] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const averageRating = calculateAverageRating(review);
 
     useEffect(() => {
         console.log("Use Effect hook  is running ...")
@@ -27,7 +29,8 @@ export const BookCheckoutPage = () => {
             })
             .then(
                 response => {
-                    console.log("Response from the 2nd service call", response.data)
+                    console.log("Response from the 2nd service call", response.data);
+                    console.log("Ratings for this book", response.data.map(review => review.rating));
                     setReview(response.data);
                 }
             )
@@ -37,6 +40,13 @@ export const BookCheckoutPage = () => {
             });
         window.scroll(0, 0);
     }, []);
+
+    function calculateAverageRating(reviews) {
+       const sum = reviews.map(review => review.rating).reduce((a,b) => (a+b), 0);
+       const avg = (Math.round((sum / reviews.length) * 10) / 10).toFixed(1);
+       console.log("The average ratings are:", avg);
+       return avg;
+    }
 
     return (
         <div>
@@ -64,8 +74,8 @@ export const BookCheckoutPage = () => {
                                         <h5 className='text-primary'>{book.author}</h5>
                                         <p className='lead'>{book.description}</p>
                                         {
-                                            (review && review.rating > 0) ? (
-                                                <StarReviews rating={review.rating} size={32} />
+                                            (review && averageRating > 0) ? (
+                                                <StarReviews rating={averageRating} size={32} />
                                             ) : (
                                                 <>
                                                     <StarReviews rating={0} size={32} />
@@ -94,8 +104,8 @@ export const BookCheckoutPage = () => {
                                     <h5 className='text-primary'>{book.author}</h5>
                                     <p className='lead'>{book.description}</p>
                                     {
-                                        (review && review.rating > 0) ? (
-                                            <StarReviews rating={review.rating} size={32} />
+                                        (review && averageRating > 0) ? (
+                                            <StarReviews rating={averageRating} size={32} />
                                         ) : (
                                             <>
                                                 <StarReviews rating={0} size={32} />
