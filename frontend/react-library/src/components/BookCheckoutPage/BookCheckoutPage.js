@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { SpinnerLoading } from "../Utils/SpinnerLoading";
 import { StarReviews } from "../Utils/StarReviews";
 import { CheckoutAndReviewBox } from "./CheckoutAndReviewBox";
+import { Reviews } from "./Reviews";
 import image from '../../Images/BooksImages/book-luv2code-1000.png';
 
 export const BookCheckoutPage = () => {
@@ -42,10 +43,10 @@ export const BookCheckoutPage = () => {
     }, []);
 
     function calculateAverageRating(reviews) {
-       const sum = reviews.map(review => review.rating).reduce((a,b) => (a+b), 0);
-       const avg = (Math.round((sum / reviews.length) * 10) / 10).toFixed(1);
-       console.log("The average ratings are:", avg);
-       return avg;
+        const sum = reviews.map(review => review.rating).reduce((a, b) => (a + b), 0);
+        const avg = (Math.round((sum / reviews.length) * 10) / 10).toFixed(1);
+        console.log("The average ratings are:", avg);
+        return avg;
     }
 
     return (
@@ -88,6 +89,7 @@ export const BookCheckoutPage = () => {
                                 <CheckoutAndReviewBox mobile={false} book={book} />
                             </div>
                             <hr />
+                            <Reviews mobile={false} reviews={review} />
                         </div>
                         <div className='container d-lg-none mt-5'>
                             <div className='d-flex justify-content-center align-items-center'>
@@ -117,6 +119,7 @@ export const BookCheckoutPage = () => {
                             </div>
                             <CheckoutAndReviewBox mobile={true} book={book} />
                             <hr />
+                            <Reviews mobile={true} reviews={review} />
                         </div>
                     </>
                 )
