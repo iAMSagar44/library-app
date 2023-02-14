@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -22,6 +23,8 @@ public class ReviewServiceImpl implements ReviewService{
     @Override
     public List<Review> retrieveReviewsByBookId(long bookId) {
         LOGGER.info("Reviews for Book ID --- {}", bookId);
-        return reviewRepository.findByBookId(bookId);
+        List<Review> reviews = reviewRepository.findByBookId(bookId);
+        reviews.sort(Comparator.comparing(Review::getDate).reversed());
+        return reviews;
     }
 }
