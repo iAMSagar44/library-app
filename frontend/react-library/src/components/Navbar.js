@@ -1,37 +1,70 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useOktaAuth } from '@okta/okta-react';
+import { SpinnerLoading } from "./Utils/SpinnerLoading";
 
 export const Navbar = () => {
 
+  const { authState, oktaAuth } = useOktaAuth();
+
+  console.log("The oktaAuth state is ----> ", authState);
+
+  const login = async () => oktaAuth.signInWithRedirect();
+  const logout = async () => oktaAuth.signOut('/');
+
+
+  if (!authState) {
     return (
-      <nav className='navbar navbar-expand-lg navbar-dark main-color py-3'>
-        <div className='container-fluid'>
-          <span className='navbar-brand'>myBooks</span>
-          <button className='navbar-toggler' type='button'
-            data-bs-toggle='collapse' data-bs-target='#navbarNavDropdown'
-            aria-controls='navbarNavDropdown' aria-expanded='false'
-            aria-label='Toggle Navigation'
-          >
-            <span className='navbar-toggler-icon'></span>
-          </button>
-          <div className='collapse navbar-collapse' id='navbarNavDropdown'>
-            <ul className='navbar-nav'>
-              <li className='nav-item'>
-                <Link className='nav-link' to="/home">Home</Link>
-              </li>
-              <li className='nav-item'>
-              <Link className='nav-link' to="/searchbooks">Search Books</Link>
-              </li>
-            </ul>
-            <ul className='navbar-nav ms-auto'>
-                <li className='nav-item m-1'>
-                  <a type='button' className='btn btn-outline-light' href='#'>
-                    Sign in
-                  </a>
-                </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-    );
+      <div>
+        <SpinnerLoading />
+      </div>
+    )
   }
+
+  return (
+    <nav className='navbar navbar-expand-lg navbar-dark main-color py-3'>
+      <div className='container-fluid'>
+        <span className='navbar-brand'>myBooks</span>
+        <button className='navbar-toggler' type='button'
+          data-bs-toggle='collapse' data-bs-target='#navbarNavDropdown'
+          aria-controls='navbarNavDropdown' aria-expanded='false'
+          aria-label='Toggle Navigation'
+        >
+          <span className='navbar-toggler-icon'></span>
+        </button>
+        <div className='collapse navbar-collapse' id='navbarNavDropdown'>
+          <ul className='navbar-nav'>
+            <li className='nav-item'>
+              <Link className='nav-link' to="/home">Home</Link>
+            </li>
+            <li className='nav-item'>
+              <Link className='nav-link' to="/searchbooks">Search Books</Link>
+            </li>
+          </ul>
+          {
+            (!authState.isAuthenticated) && (
+              <ul className='navbar-nav ms-auto'>
+                <li className='nav-item m-1'>
+                  <button type='button' className='btn btn-outline-light' onClick={login}>
+                    Sign in
+                  </button>
+                </li>
+              </ul>
+            )
+          }
+          {
+            (authState.isAuthenticated) && (
+              <ul className='navbar-nav ms-auto'>
+                <li className='nav-item m-1'>
+                  <button type='button' className='btn btn-outline-light' onClick={logout}>
+                    Sign out
+                  </button>
+                </li>
+              </ul>
+            )
+          }
+        </div>
+      </div>
+    </nav>
+  );
+}
