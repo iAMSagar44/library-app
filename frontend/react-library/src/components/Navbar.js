@@ -9,7 +9,7 @@ export const Navbar = () => {
 
   console.log("The oktaAuth state is ----> ", authState);
 
-  const login = async () => oktaAuth.signInWithRedirect();
+  //const login = async () => oktaAuth.signInWithRedirect();
   const logout = async () => oktaAuth.signOut('/');
 
 
@@ -45,9 +45,9 @@ export const Navbar = () => {
             (!authState.isAuthenticated) && (
               <ul className='navbar-nav ms-auto'>
                 <li className='nav-item m-1'>
-                  <button type='button' className='btn btn-outline-light' onClick={login}>
+                  <Link type='button' className='btn btn-outline-light' to="/login">
                     Sign in
-                  </button>
+                  </Link>
                 </li>
               </ul>
             )
