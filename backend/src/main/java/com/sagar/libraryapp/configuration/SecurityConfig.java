@@ -13,6 +13,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers("/", "/actuator/**", "/api/**", "/index.html").permitAll()
                         .anyRequest().authenticated())
+                .csrf().disable() //to action later
                 .oauth2ResourceServer().jwt();
         return http.build();
     }
