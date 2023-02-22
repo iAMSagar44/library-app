@@ -2,6 +2,7 @@ package com.sagar.libraryapp.service;
 
 import com.sagar.libraryapp.model.Book;
 import com.sagar.libraryapp.model.Checkout;
+import com.sagar.libraryapp.model.UserCheckOutDetails;
 import com.sagar.libraryapp.repository.BookRepository;
 import com.sagar.libraryapp.repository.CheckoutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,14 @@ public class CheckoutServiceImpl implements CheckoutService{
     }
 
     @Override
-    public int checkedoutBooks(String email) {
-        return 0;
+    public UserCheckOutDetails checkedoutBooks(String email, long bookId) {
+        boolean isCheckedOut = false;
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
+        Optional<Checkout> checkout = checkoutRepository.findByUserEmailAndBookId(email, bookId);
+        if(checkout.isPresent()){
+            isCheckedOut = true;
+        }
+        int count = checkoutRepository.countByUserEmail(email);
+        return new UserCheckOutDetails(count, isCheckedOut);
     }
 }

@@ -1,15 +1,15 @@
 package com.sagar.libraryapp.controller;
 
+import com.sagar.libraryapp.model.UserCheckOutDetails;
 import com.sagar.libraryapp.service.CheckoutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user/api")
 public class CheckoutController {
 
     private final CheckoutService checkoutService;
@@ -19,15 +19,16 @@ public class CheckoutController {
     }
 
     @PostMapping("/books/{id}/checkout")
-    public ResponseEntity<?> checkoutBook(@PathVariable long id) {
-        String email = "john.appleseed@gmail.com"; //this is a dummy value. Needs to be replaced with the authentication principal.
+    public ResponseEntity<?> checkoutBook(JwtAuthenticationToken jwtAuthenticationToken, @PathVariable long id) {
+        String email = jwtAuthenticationToken.getToken().getSubject();
         checkoutService.checkoutBook(email, id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/books/{id}")
-    public Map<String, Object> userCheckoutDetails(@PathVariable long id){
-        return Map.of("count",2, "checkedOut", true);
+    public UserCheckOutDetails userCheckoutDetails(JwtAuthenticationToken jwtAuthenticationToken, @PathVariable long id){
+        String email = jwtAuthenticationToken.getToken().getSubject();
+        return checkoutService.checkedoutBooks(email, id);
     }
 
 }

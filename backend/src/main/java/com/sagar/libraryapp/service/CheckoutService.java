@@ -1,8 +1,10 @@
 package com.sagar.libraryapp.service;
 
+import com.sagar.libraryapp.model.UserCheckOutDetails;
+
 public interface CheckoutService {
 
     void checkoutBook(String email, long bookId);
-    int checkedoutBooks(String email);
+    UserCheckOutDetails checkedoutBooks(String email, long bookId);
 
 }
