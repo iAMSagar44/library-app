@@ -6,14 +6,21 @@ import { StarReviews } from "../Utils/StarReviews";
 import { CheckoutAndReviewBox } from "./CheckoutAndReviewBox";
 import { Reviews } from "./Reviews";
 import image from '../../Images/BooksImages/book-luv2code-1000.png';
+import { useOktaAuth } from '@okta/okta-react';
 
 export const BookCheckoutPage = () => {
     const [book, setBook] = useState(null);
     const [review, setReview] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [userCheckOutData, setUserCheckOutData] = useState({
+        "booksCheckedOut": 0,
+        "isBookCheckedOut": false
+    });
 
     const averageRating = calculateAverageRating(review);
+
+    const { authState } = useOktaAuth();
 
     useEffect(() => {
         console.log("Use Effect hook  is running ...")
@@ -23,7 +30,7 @@ export const BookCheckoutPage = () => {
         const reviewURI = (`${baseURI}/reviews/${bookID}`);
         axios.get(fetchURI)
             .then(response => {
-                console.log("Response from the 1st service call", response.data)
+                //console.log("Response from the 1st service call", response.data)
                 setBook(response.data);
                 setIsLoading(false);
                 return axios.get(reviewURI);
@@ -31,7 +38,7 @@ export const BookCheckoutPage = () => {
             .then(
                 response => {
                     console.log("Response from the 2nd service call", response.data);
-                    console.log("Ratings for this book", response.data.map(review => review.rating));
+                    //console.log("Ratings for this book", response.data.map(review => review.rating));
                     setReview(response.data);
                 }
             )
@@ -42,10 +49,32 @@ export const BookCheckoutPage = () => {
         window.scroll(0, 0);
     }, []);
 
+    useEffect(() => {
+        console.log("-----> Use effect with login data running .......")
+        if (authState?.isAuthenticated) {
+            console.log("User is authenticated");
+            const bookID = (window.location.pathname).split('/')[3];
+            // Set the request headers with the OAuth bearer token
+            const config = {
+                headers: { Authorization: `Bearer ${authState.accessToken.accessToken}` }
+            };
+
+            // Make a request to the secured endpoint using Axios
+            axios.get(`http://localhost:8080/user/api/books/${bookID}`, config)
+                .then(response => {
+                    console.log(response.data);
+                    setUserCheckOutData(response.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
+    }, [authState])
+
     function calculateAverageRating(reviews) {
         const sum = reviews.map(review => review.rating).reduce((a, b) => (a + b), 0);
         const avg = (Math.round((sum / reviews.length) * 10) / 10).toFixed(1);
-        console.log("The average ratings are:", avg);
+        //console.log("The average ratings are:", avg);
         return avg;
     }
 
@@ -86,7 +115,7 @@ export const BookCheckoutPage = () => {
                                         }
                                     </div>
                                 </div>
-                                <CheckoutAndReviewBox mobile={false} book={book} />
+                                <CheckoutAndReviewBox mobile={false} book={book} checkOutData={userCheckOutData} />
                             </div>
                             <hr />
                             <Reviews mobile={false} reviews={review} />
@@ -117,7 +146,7 @@ export const BookCheckoutPage = () => {
                                     }
                                 </div>
                             </div>
-                            <CheckoutAndReviewBox mobile={true} book={book} />
+                            <CheckoutAndReviewBox mobile={true} book={book} checkOutData={userCheckOutData} />
                             <hr />
                             <Reviews mobile={true} reviews={review} />
                         </div>
