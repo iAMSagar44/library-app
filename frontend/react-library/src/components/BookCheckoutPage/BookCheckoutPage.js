@@ -17,20 +17,28 @@ export const BookCheckoutPage = () => {
         "booksCheckedOut": 0,
         "isBookCheckedOut": false
     });
+    const [triggerCheckOut, setTriggerCheckout] = useState(0);
+    const [refreshBook, setRefreshBook] = useState(false);
 
     const averageRating = calculateAverageRating(review);
 
     const { authState } = useOktaAuth();
 
+    const checkOutBook = (bookId) => {
+        //console.log("The book to be checked out is --->", bookId);
+        setTriggerCheckout(bookId);
+    }
+
     useEffect(() => {
-        console.log("Use Effect hook  is running ...")
+        console.log("Use Effect hook  is running ...");
+        console.log("Refresh status ...", refreshBook);
         const bookID = (window.location.pathname).split('/')[3];
         const baseURI = "http://localhost:8080/api/books";
         const fetchURI = (`${baseURI}/${bookID}`);
         const reviewURI = (`${baseURI}/reviews/${bookID}`);
         axios.get(fetchURI)
             .then(response => {
-                //console.log("Response from the 1st service call", response.data)
+                console.log("Response from the 1st service call", response.data)
                 setBook(response.data);
                 setIsLoading(false);
                 return axios.get(reviewURI);
@@ -47,10 +55,11 @@ export const BookCheckoutPage = () => {
                 setIsLoading(false);
             });
         window.scroll(0, 0);
-    }, []);
+    }, [refreshBook]);
 
     useEffect(() => {
         console.log("-----> Use effect with login data running .......")
+        console.log("Refresh status ...", refreshBook);
         if (authState?.isAuthenticated) {
             console.log("User is authenticated");
             const bookID = (window.location.pathname).split('/')[3];
@@ -69,7 +78,31 @@ export const BookCheckoutPage = () => {
                     console.log(error);
                 });
         }
-    }, [authState])
+    }, [authState, refreshBook])
+
+    useEffect(() => {
+        console.log("-----> Use effect to checkout book is running .......", triggerCheckOut)
+        if (authState?.isAuthenticated && triggerCheckOut > 0) {
+            const bookID = triggerCheckOut
+            console.log("The book to be checked out is --->", bookID);
+            // Set the request headers with the OAuth bearer token
+            const config = {
+                headers: { Authorization: `Bearer ${authState.accessToken.accessToken}` }
+            };
+
+            // Make a request to the secured endpoint using Axios
+            axios.post(`http://localhost:8080/user/api/books/${bookID}/checkout`, {}, config)
+                .then(response => {
+                    console.log("Book checked out successfully", response.data);
+                    setTriggerCheckout(0);
+                    setRefreshBook(true);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+
+        }
+    }, [triggerCheckOut])
 
     function calculateAverageRating(reviews) {
         const sum = reviews.map(review => review.rating).reduce((a, b) => (a + b), 0);
@@ -115,7 +148,7 @@ export const BookCheckoutPage = () => {
                                         }
                                     </div>
                                 </div>
-                                <CheckoutAndReviewBox mobile={false} book={book} checkOutData={userCheckOutData} />
+                                <CheckoutAndReviewBox mobile={false} book={book} checkOutData={userCheckOutData} checkOutBook={checkOutBook} />
                             </div>
                             <hr />
                             <Reviews mobile={false} reviews={review} />
@@ -146,7 +179,7 @@ export const BookCheckoutPage = () => {
                                     }
                                 </div>
                             </div>
-                            <CheckoutAndReviewBox mobile={true} book={book} checkOutData={userCheckOutData} />
+                            <CheckoutAndReviewBox mobile={true} book={book} checkOutData={userCheckOutData} checkOutBook={checkOutBook} />
                             <hr />
                             <Reviews mobile={true} reviews={review} />
                         </div>

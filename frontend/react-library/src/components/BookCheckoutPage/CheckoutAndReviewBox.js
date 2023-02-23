@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from 'react-router-dom';
 import { useOktaAuth } from '@okta/okta-react';
 
-export const CheckoutAndReviewBox = ({ mobile, book, checkOutData }) => {
+export const CheckoutAndReviewBox = ({ mobile, book, checkOutData, checkOutBook }) => {
 
     const { authState } = useOktaAuth();
     const { booksCheckedOut, isBookCheckedOut } = checkOutData;
@@ -41,7 +41,13 @@ export const CheckoutAndReviewBox = ({ mobile, book, checkOutData }) => {
                         <Link className='btn btn-success btn-lg' to="/login">Sign in</Link>
                     )
                 }
+                {
+                    (authState?.isAuthenticated && !isBookCheckedOut) && (
+                        <button className='btn btn-success btn-lg' onClick={() => checkOutBook(book.id)}>Checkout</button>
+                    )
+                }
                 <hr />
+
                 {
                     (authState?.isAuthenticated && isBookCheckedOut) && (
                         <p className='mt-3'>
