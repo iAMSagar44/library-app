@@ -19,6 +19,7 @@ export const BookCheckoutPage = () => {
     });
     const [triggerCheckOut, setTriggerCheckout] = useState(0);
     const [refreshBook, setRefreshBook] = useState(false);
+    const [checkoutProcessed, setCheckoutProcessed] = useState(false);
 
     const averageRating = calculateAverageRating(review);
 
@@ -95,7 +96,8 @@ export const BookCheckoutPage = () => {
                 .then(response => {
                     console.log("Book checked out successfully", response.data);
                     setTriggerCheckout(0);
-                    setRefreshBook(true);
+                    setTimeout(() => setRefreshBook(true), 3000);
+                    setTimeout(() => setCheckoutProcessed(true), 3000);
                 })
                 .catch(error => {
                     console.log(error);
@@ -148,7 +150,7 @@ export const BookCheckoutPage = () => {
                                         }
                                     </div>
                                 </div>
-                                <CheckoutAndReviewBox mobile={false} book={book} checkOutData={userCheckOutData} checkOutBook={checkOutBook} />
+                                <CheckoutAndReviewBox mobile={false} book={book} checkOutData={userCheckOutData} checkOutBook={checkOutBook} checkoutProcessed={checkoutProcessed} />
                             </div>
                             <hr />
                             <Reviews mobile={false} reviews={review} />
@@ -179,7 +181,7 @@ export const BookCheckoutPage = () => {
                                     }
                                 </div>
                             </div>
-                            <CheckoutAndReviewBox mobile={true} book={book} checkOutData={userCheckOutData} checkOutBook={checkOutBook} />
+                            <CheckoutAndReviewBox mobile={true} book={book} checkOutData={userCheckOutData} checkOutBook={checkOutBook} checkoutProcessed={checkoutProcessed} />
                             <hr />
                             <Reviews mobile={true} reviews={review} />
                         </div>

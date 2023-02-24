@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from 'react-router-dom';
 import { useOktaAuth } from '@okta/okta-react';
+import { SpinnerLoading } from "../Utils/SpinnerLoading";
 
-export const CheckoutAndReviewBox = ({ mobile, book, checkOutData, checkOutBook }) => {
+export const CheckoutAndReviewBox = ({ mobile, book, checkOutData, checkOutBook, checkoutProcessed }) => {
 
     const { authState } = useOktaAuth();
     const { booksCheckedOut, isBookCheckedOut } = checkOutData;
+    const [isLoading, setIsLoading] = useState(false);
+
+    const processCheckout = (id) => {
+        setIsLoading(true);
+        checkOutBook(id);
+    }
 
     return (
         <div className={mobile ? 'card d-flex mt-5' : 'card col-3 container d-flex mb-5'}>
@@ -42,14 +49,26 @@ export const CheckoutAndReviewBox = ({ mobile, book, checkOutData, checkOutBook 
                     )
                 }
                 {
-                    (authState?.isAuthenticated && !isBookCheckedOut) && (
-                        <button className='btn btn-success btn-lg' onClick={() => checkOutBook(book.id)}>Checkout</button>
+                    (authState?.isAuthenticated && !isBookCheckedOut && !isLoading) && (
+                        <button className='btn btn-success btn-lg' onClick={() => processCheckout(book.id)}>Checkout</button>
+                    )
+                }
+                {
+                    (authState?.isAuthenticated && isLoading && !checkoutProcessed) && (
+                        <SpinnerLoading />
+                    )
+                }
+                {
+                    (authState?.isAuthenticated && checkoutProcessed) && (
+                        <p className='mt-3'>
+                            <b>Successfully checked out.</b>
+                        </p>
                     )
                 }
                 <hr />
 
                 {
-                    (authState?.isAuthenticated && isBookCheckedOut) && (
+                    (authState?.isAuthenticated && isBookCheckedOut && !checkoutProcessed) && (
                         <p className='mt-3'>
                             <b>This book has already been checked out by you.</b>
                         </p>
