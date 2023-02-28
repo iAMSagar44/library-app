@@ -1,5 +1,6 @@
 package com.sagar.libraryapp.controller;
 
+import com.sagar.libraryapp.exception.BookNotFoundException;
 import com.sagar.libraryapp.model.Book;
 import com.sagar.libraryapp.service.BookService;
 import org.slf4j.Logger;
@@ -35,6 +36,6 @@ public class BookController {
 
     @GetMapping("/books/{id}")
     public Book getBook(@PathVariable long id) {
-        return bookService.getBook(id).orElseThrow(() -> new RuntimeException("Book not found"));
+        return bookService.getBook(id).orElseThrow(() -> new BookNotFoundException("Book not found"));
     }
 }

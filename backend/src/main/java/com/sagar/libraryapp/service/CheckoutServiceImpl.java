@@ -1,5 +1,6 @@
 package com.sagar.libraryapp.service;
 
+import com.sagar.libraryapp.exception.BookNotFoundException;
 import com.sagar.libraryapp.model.Book;
 import com.sagar.libraryapp.model.Checkout;
 import com.sagar.libraryapp.model.UserCheckOutDetails;
@@ -27,7 +28,7 @@ public class CheckoutServiceImpl implements CheckoutService{
     @Override
     @Transactional
     public void checkoutBook(String email, long bookId) {
-        Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException("Book not found"));
         Optional<Checkout> byUserEmailAndBookId = checkoutRepository.findByUserEmailAndBookId(email, bookId);
         if(byUserEmailAndBookId.isPresent()) {
             throw new RuntimeException("Book has already been checked out");
@@ -42,7 +43,7 @@ public class CheckoutServiceImpl implements CheckoutService{
     @Override
     public UserCheckOutDetails checkedoutBooks(String email, long bookId) {
         boolean isCheckedOut = false;
-        Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException("Book not found"));
         Optional<Checkout> checkout = checkoutRepository.findByUserEmailAndBookId(email, bookId);
         if(checkout.isPresent()){
             isCheckedOut = true;
