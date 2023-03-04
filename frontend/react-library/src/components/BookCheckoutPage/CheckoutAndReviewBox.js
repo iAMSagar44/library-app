@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { Link } from 'react-router-dom';
 import { useOktaAuth } from '@okta/okta-react';
 import { SpinnerLoading } from "../Utils/SpinnerLoading";
+import SubmitReview from "./SubmitReview";
 
-export const CheckoutAndReviewBox = ({ mobile, book, checkOutData, checkOutBook, checkoutProcessed }) => {
+export const CheckoutAndReviewBox = ({ mobile, book, checkOutData, checkOutBook, checkoutProcessed, refreshReviewSection}) => {
 
     const { authState } = useOktaAuth();
     const { booksCheckedOut, isBookCheckedOut } = checkOutData;
@@ -82,6 +83,11 @@ export const CheckoutAndReviewBox = ({ mobile, book, checkOutData, checkOutBook,
                         <p>
                             Sign in to be able to leave a review.
                         </p>
+                    )
+                }
+                 {
+                    (authState?.isAuthenticated) && (
+                        <SubmitReview bookID={book.id} refreshReviewSection={refreshReviewSection}/>
                     )
                 }
             </div>

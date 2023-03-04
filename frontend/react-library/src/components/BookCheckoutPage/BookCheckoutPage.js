@@ -11,6 +11,7 @@ import { useOktaAuth } from '@okta/okta-react';
 export const BookCheckoutPage = () => {
     const [book, setBook] = useState(null);
     const [review, setReview] = useState([]);
+    const [refreshReview, setRefreshReview] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [userCheckOutData, setUserCheckOutData] = useState({
@@ -28,6 +29,10 @@ export const BookCheckoutPage = () => {
     const checkOutBook = (bookId) => {
         //console.log("The book to be checked out is --->", bookId);
         setTriggerCheckout(bookId);
+    }
+
+    const refreshReviewSection = () => {
+        setRefreshReview(true);
     }
 
     useEffect(() => {
@@ -56,7 +61,7 @@ export const BookCheckoutPage = () => {
                 setIsLoading(false);
             });
         window.scroll(0, 0);
-    }, [refreshBook]);
+    }, [refreshBook, refreshReview]);
 
     useEffect(() => {
         console.log("-----> Use effect with login data running .......")
@@ -150,7 +155,7 @@ export const BookCheckoutPage = () => {
                                         }
                                     </div>
                                 </div>
-                                <CheckoutAndReviewBox mobile={false} book={book} checkOutData={userCheckOutData} checkOutBook={checkOutBook} checkoutProcessed={checkoutProcessed} />
+                                <CheckoutAndReviewBox mobile={false} book={book} checkOutData={userCheckOutData} checkOutBook={checkOutBook} checkoutProcessed={checkoutProcessed} refreshReviewSection={refreshReviewSection}/>
                             </div>
                             <hr />
                             <Reviews mobile={false} reviews={review} />
@@ -181,7 +186,7 @@ export const BookCheckoutPage = () => {
                                     }
                                 </div>
                             </div>
-                            <CheckoutAndReviewBox mobile={true} book={book} checkOutData={userCheckOutData} checkOutBook={checkOutBook} checkoutProcessed={checkoutProcessed} />
+                            <CheckoutAndReviewBox mobile={true} book={book} checkOutData={userCheckOutData} checkOutBook={checkOutBook} checkoutProcessed={checkoutProcessed} refreshReviewSection={refreshReviewSection}/>
                             <hr />
                             <Reviews mobile={true} reviews={review} />
                         </div>
