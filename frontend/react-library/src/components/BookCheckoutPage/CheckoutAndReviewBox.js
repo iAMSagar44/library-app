@@ -51,7 +51,12 @@ export const CheckoutAndReviewBox = ({ mobile, book, checkOutData, checkOutBook,
                 }
                 {
                     (authState?.isAuthenticated && !isBookCheckedOut && !isLoading) && (
-                        <button className='btn btn-success btn-lg' onClick={() => processCheckout(book.id)}>Checkout</button>
+                        <button className='btn btn-success btn-lg' disabled={booksCheckedOut === 5} onClick={() => processCheckout(book.id)}>Checkout</button>
+                    )
+                }
+                {
+                    (booksCheckedOut === 5 && !isBookCheckedOut && !isLoading) && (
+                        <p className='fs-6 fst-italic text-danger'>Maximum books allowed to be checked out is 5. Please return a book to checkout further books.</p>
                     )
                 }
                 {
