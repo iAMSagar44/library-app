@@ -5,10 +5,12 @@ import { SearchBooksPage } from './components/SearchBooks/SearchBooksPage';
 import { BookCheckoutPage } from './components/BookCheckoutPage/BookCheckoutPage';
 import { Footer } from './components/Footer';
 import { SpinnerLoading } from './components/Utils/SpinnerLoading';
-import { Routes, Route, Navigate, useNavigate} from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { OktaAuth, toRelativeUrl } from '@okta/okta-auth-js';
 import { Security, LoginCallback } from '@okta/okta-react';
 import LoginWidget from './Auth/LoginWidget';
+import { ShelfPage } from './components/ShelfPage/ShelfPage';
+import { RequiredAuth } from './Auth/SecureRouteAuth';
 
 function App() {
 
@@ -44,8 +46,11 @@ function App() {
             <Route path="/home" element={<HomePage />} />
             <Route path="/searchbooks" element={<SearchBooksPage />} />
             <Route path="/books/checkout/:id" element={<BookCheckoutPage />} />
-            <Route path="/login" element={<LoginWidget config={oktaConfig} />}/>
+            <Route path="/login" element={<LoginWidget config={oktaConfig} />} />
             <Route path="login/callback" element={<LoginCallback loadingElement={<SpinnerLoading />} />} />
+            <Route path="/bookshelf" element={<RequiredAuth />}>
+              <Route path="" element={<ShelfPage />} />
+            </Route>
           </Routes>
         </div>
         <Footer />

@@ -40,6 +40,9 @@ export const Navbar = () => {
             <li className='nav-item'>
               <Link className='nav-link' to="/searchbooks">Search Books</Link>
             </li>
+            <li className='nav-item'>
+              <Link className='nav-link' to="/bookshelf">My Bookshelf</Link>
+            </li>
           </ul>
           {
             (!authState.isAuthenticated) && (
