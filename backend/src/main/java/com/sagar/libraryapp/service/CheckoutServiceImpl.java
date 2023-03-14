@@ -6,6 +6,8 @@ import com.sagar.libraryapp.model.Checkout;
 import com.sagar.libraryapp.model.UserCheckOutDetails;
 import com.sagar.libraryapp.repository.BookRepository;
 import com.sagar.libraryapp.repository.CheckoutRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,8 @@ public class CheckoutServiceImpl implements CheckoutService{
 
     private final CheckoutRepository checkoutRepository;
     private final BookRepository bookRepository;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CheckoutServiceImpl.class);
 
     @Autowired
     public CheckoutServiceImpl(CheckoutRepository checkoutRepository, BookRepository bookRepository) {
@@ -50,5 +54,21 @@ public class CheckoutServiceImpl implements CheckoutService{
         }
         int count = checkoutRepository.countByUserEmail(email);
         return new UserCheckOutDetails(count, isCheckedOut);
+    }
+
+
+    @Override
+    public void renewBook(String email, long bookId) {
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException("Book not found"));
+        Checkout checkout = checkoutRepository.findByUserEmailAndBookId(email, bookId)
+                .orElseThrow(() -> new RuntimeException("Book is currently not checked out by this user"));
+
+        LOGGER.info("The checked out book is ---> {}", checkout);
+
+        if(LocalDate.parse(checkout.getReturnDate()).isBefore(LocalDate.now())) {
+            throw new RuntimeException("The book is overdue and cannot be renewed");
+        }
+        checkout.setReturnDate(LocalDate.parse(checkout.getReturnDate()).plusDays(7).toString());
+        checkoutRepository.save(checkout);
     }
 }

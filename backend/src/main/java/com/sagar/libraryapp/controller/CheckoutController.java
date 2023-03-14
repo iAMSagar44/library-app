@@ -32,4 +32,11 @@ public class CheckoutController {
         return checkoutService.checkedoutBooks(email, id);
     }
 
+    @PutMapping("/books/{id}/checkout")
+    public ResponseEntity<?> renewBook(JwtAuthenticationToken jwtAuthenticationToken, @PathVariable long id) {
+        String email = jwtAuthenticationToken.getToken().getSubject();
+        checkoutService.renewBook(email, id);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
 }
