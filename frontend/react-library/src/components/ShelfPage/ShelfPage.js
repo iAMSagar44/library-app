@@ -61,11 +61,15 @@ export const ShelfPage = () => {
                             (isLoading) &&
                             <SpinnerLoading />
                         }
-                        {
-                            (!isLoading) &&
-                            <Loans loanedBooks={loanedBooks}/>
-                        }
-
+                        <div className='row row-cols-1 row-cols-md-4 g-4'>
+                            {
+                                (!isLoading) && (
+                                    loanedBooks.map(loanedBook => (
+                                        <Loans key={loanedBook.book.id} loanedBook={loanedBook}/>
+                                    ))
+                                )
+                            }
+                        </div>
                     </div>
                     <div className='tab-pane fade' id='nav-history' role='tabpanel'
                         aria-labelledby='nav-history-tab'>
