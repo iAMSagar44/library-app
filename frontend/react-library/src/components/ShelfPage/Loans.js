@@ -1,13 +1,15 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import image from '../../Images/BooksImages/book-luv2code-1000.png';
 import { CustomModal } from '../Utils/CustomModal';
 
 export const Loans = ({ loanedBook }) => {
 
     const [showModal, setShowModal] = useState(false);
+    let ref = useRef(null);
 
-    function handleShowModal() {
+    function handleShowModal(action) {
+        (action === "return" ? ref.current="return" : ref.current="renew")
         setShowModal(true);
     }
 
@@ -37,7 +39,7 @@ export const Loans = ({ loanedBook }) => {
                     <h5 className="card-title">{loanedBook.book.title}</h5>
                     {
                         (loanedBook.overdue) &&
-                        <h6 className="card-text text-danger">This book is overdude by {Math.abs(loanedBook.days)} {Math.abs(loanedBook.days).days > 1 ?
+                        <h6 className="card-text text-danger">This book is overdude by {Math.abs(loanedBook.days)} {Math.abs(loanedBook.days) > 1 ?
                             "days" : "day"}.</h6>
                     }
                     {
@@ -47,18 +49,32 @@ export const Loans = ({ loanedBook }) => {
                     <div className='row row-cols-2 row-cols-md-2'>
                         <div className='col'>
                             <button className="btn btn-success"
-                                onClick={handleShowModal}>Return Book</button>
+                                onClick={() => handleShowModal("return")}>Return Book</button>
                         </div>
-                        <div className='col'>
-                            <button className="btn btn-primary">Renew Book</button>
-                        </div>
+                        {
+                            (loanedBook.overdue) && (
+                                <div className='col'>
+                                    <span className="d-inline-block" tabIndex="0" data-bs-toggle="tooltip" title="Renew option not available if book is overdue">
+                                        <button className="btn btn-primary" disabled>Renew Book</button>
+                                    </span>
+                                </div>
+                            )
+                        }
+                        {
+                            (!loanedBook.overdue) && (
+                                <div className='col'>
+                                    <button className="btn btn-primary" onClick={() => handleShowModal("renew")}>Renew Book</button>
+                                </div>
+                            )
+                        }
+
                     </div>
                 </div>
             </div>
             {/* Modal for Return book */}
             {
                 showModal &&
-                    <CustomModal title={loanedBook.book.title} show={showModal} onHide={handleHideModal} onSave={handleSaveChanges} />
+                <CustomModal title={loanedBook.book.title} show={showModal} action={ref.current} onHide={handleHideModal} onSave={handleSaveChanges} />
             }
         </div>
     )
