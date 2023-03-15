@@ -11,8 +11,13 @@ export const ShelfPage = () => {
     const [loanedBooks, setLoanedBooks] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [refreshBooks, setRefreshBooks] = useState(false);
 
     const { authState } = useOktaAuth();
+
+    function refreshShelf() {
+        setRefreshBooks(true);
+    }
 
     useEffect(() => {
         console.log("-----> Use effect for Shelf Page component running .......")
@@ -35,7 +40,7 @@ export const ShelfPage = () => {
                     setError(error.message);
                 });
         }
-    }, [])
+    }, [refreshBooks])
 
     return (
         <div className='container'>
@@ -65,7 +70,7 @@ export const ShelfPage = () => {
                             {
                                 (!isLoading) && (
                                     loanedBooks.map(loanedBook => (
-                                        <Loans key={loanedBook.book.id} loanedBook={loanedBook}/>
+                                        <Loans key={loanedBook.book.id} loanedBook={loanedBook} refreshShelf={refreshShelf}/>
                                     ))
                                 )
                             }

@@ -1,15 +1,18 @@
 import React from 'react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import image from '../../Images/BooksImages/book-luv2code-1000.png';
 import { CustomModal } from '../Utils/CustomModal';
+import { useOktaAuth } from '@okta/okta-react';
+import axios from "axios";
 
-export const Loans = ({ loanedBook }) => {
+export const Loans = ({ loanedBook, refreshShelf }) => {
 
     const [showModal, setShowModal] = useState(false);
+    const { authState } = useOktaAuth();
     let ref = useRef(null);
 
     function handleShowModal(action) {
-        (action === "return" ? ref.current="return" : ref.current="renew")
+        (action === "return" ? ref.current = "return" : ref.current = "renew")
         setShowModal(true);
     }
 
@@ -17,9 +20,34 @@ export const Loans = ({ loanedBook }) => {
         setShowModal(false);
     }
 
-    function handleSaveChanges() {
+    function handleSaveChanges(action) {
         // handle save changes logic here
-        console.log("Back end logic to return or renew book")
+        console.log("Back end logic to return or renew book", loanedBook.book.id, action);
+        if (authState?.isAuthenticated) {
+            console.log("User is authenticated");
+            // Set the request headers with the OAuth bearer token
+            const config = {
+                headers: { Authorization: `Bearer ${authState.accessToken.accessToken}` }
+            };
+
+            if (action === "return") {
+
+                axios.delete(`http://localhost:8080/user/api/books/${loanedBook.book.id}/checkout`, config)
+                    .then(response => {
+                        console.log("Book returned successfully", response);
+                        refreshShelf();
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+    
+            }
+        }   
+
+        if (action === "renew") {
+
+        }
+
         setShowModal(false);
     }
 

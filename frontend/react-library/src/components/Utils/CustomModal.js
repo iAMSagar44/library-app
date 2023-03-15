@@ -15,7 +15,7 @@ export const CustomModal = ({ title, show, onHide, onSave, action }) => {
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" onClick={onHide}>Close</button>
-                        <button type="button" className="btn btn-primary" onClick={onSave}>Confirm</button>
+                        <button type="button" className="btn btn-primary" onClick={() => onSave(action)}>Confirm</button>
                     </div>
                 </div>
             </div>
