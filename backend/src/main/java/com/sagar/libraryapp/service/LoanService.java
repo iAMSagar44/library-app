@@ -2,12 +2,16 @@ package com.sagar.libraryapp.service;
 
 import com.sagar.libraryapp.model.Book;
 import com.sagar.libraryapp.model.Checkout;
+import com.sagar.libraryapp.model.History;
 import com.sagar.libraryapp.repository.BookRepository;
 import com.sagar.libraryapp.repository.CheckoutRepository;
+import com.sagar.libraryapp.repository.HistoryRepository;
 import com.sagar.libraryapp.responsemodel.LoanedBooks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,12 +25,15 @@ public class LoanService {
 
     private final BookRepository bookRepository;
     private final CheckoutRepository checkoutRepository;
+
+    private final HistoryRepository historyRepository;
     
     private static final Logger LOGGER = LoggerFactory.getLogger(LoanService.class);
     @Autowired
-    public LoanService(BookRepository bookRepository, CheckoutRepository checkoutRepository) {
+    public LoanService(BookRepository bookRepository, CheckoutRepository checkoutRepository, HistoryRepository historyRepository) {
         this.bookRepository = bookRepository;
         this.checkoutRepository = checkoutRepository;
+        this.historyRepository = historyRepository;
     }
 
     public List<LoanedBooks> retrieveLoanedBooks(String email){
@@ -52,5 +59,10 @@ public class LoanService {
             loanedBooksList.sort(Comparator.comparing(LoanedBooks::returnDate));
         }
         return loanedBooksList;
+    }
+
+    public Page<History> retrieveHistory(String email, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return historyRepository.findByUserEmail(email, pageRequest);
     }
 }

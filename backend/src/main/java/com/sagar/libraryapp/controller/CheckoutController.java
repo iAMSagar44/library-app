@@ -39,4 +39,11 @@ public class CheckoutController {
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
+    @DeleteMapping("/books/{id}/checkout")
+    public ResponseEntity<?> returnBook(JwtAuthenticationToken jwtAuthenticationToken, @PathVariable long id) {
+        String email = jwtAuthenticationToken.getToken().getSubject();
+        checkoutService.returnBook(email, id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

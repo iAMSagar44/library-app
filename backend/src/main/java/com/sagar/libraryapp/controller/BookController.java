@@ -2,6 +2,7 @@ package com.sagar.libraryapp.controller;
 
 import com.sagar.libraryapp.exception.BookNotFoundException;
 import com.sagar.libraryapp.model.Book;
+import com.sagar.libraryapp.model.History;
 import com.sagar.libraryapp.responsemodel.LoanedBooks;
 import com.sagar.libraryapp.service.BookService;
 import com.sagar.libraryapp.service.LoanService;
@@ -49,5 +50,13 @@ public class BookController {
     public List<LoanedBooks> getLoanedBooks(JwtAuthenticationToken jwtAuthenticationToken) {
         String email = jwtAuthenticationToken.getToken().getSubject();
         return loanService.retrieveLoanedBooks(email);
+    }
+
+    @GetMapping("/user/api/history-books")
+    public Page<History> getHistory(JwtAuthenticationToken jwtAuthenticationToken,
+                                    @RequestParam(value = "page") int page,
+                                    @RequestParam(value = "size") int size) {
+        String email = jwtAuthenticationToken.getToken().getSubject();
+        return loanService.retrieveHistory(email, page, size);
     }
 }

@@ -3,9 +3,11 @@ package com.sagar.libraryapp.service;
 import com.sagar.libraryapp.exception.BookNotFoundException;
 import com.sagar.libraryapp.model.Book;
 import com.sagar.libraryapp.model.Checkout;
+import com.sagar.libraryapp.model.History;
 import com.sagar.libraryapp.model.UserCheckOutDetails;
 import com.sagar.libraryapp.repository.BookRepository;
 import com.sagar.libraryapp.repository.CheckoutRepository;
+import com.sagar.libraryapp.repository.HistoryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +23,15 @@ public class CheckoutServiceImpl implements CheckoutService{
     private final CheckoutRepository checkoutRepository;
     private final BookRepository bookRepository;
 
+    private final HistoryRepository historyRepository;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckoutServiceImpl.class);
 
     @Autowired
-    public CheckoutServiceImpl(CheckoutRepository checkoutRepository, BookRepository bookRepository) {
+    public CheckoutServiceImpl(CheckoutRepository checkoutRepository, BookRepository bookRepository, HistoryRepository historyRepository) {
         this.checkoutRepository = checkoutRepository;
         this.bookRepository = bookRepository;
+        this.historyRepository = historyRepository;
     }
 
     @Override
@@ -70,5 +75,25 @@ public class CheckoutServiceImpl implements CheckoutService{
         }
         checkout.setReturnDate(LocalDate.parse(checkout.getReturnDate()).plusDays(7).toString());
         checkoutRepository.save(checkout);
+    }
+
+    @Override
+    @Transactional
+    public void returnBook(String email, long bookId) {
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException("Book not found"));
+        Checkout checkout = checkoutRepository.findByUserEmailAndBookId(email, bookId)
+                .orElseThrow(() -> new RuntimeException("Book is currently not checked out by this user"));
+
+        LOGGER.info("The checked out book is ---> {}", checkout);
+
+        checkoutRepository.delete(checkout);
+
+        book.setCopiesAvailable(book.getCopiesAvailable() + 1);
+        bookRepository.save(book);
+
+        historyRepository.save(new History(email, checkout.getCheckoutDate(), LocalDate.now().toString(),
+                book.getTitle(), book.getAuthor(),book.getDescription(), book.getImg()));
+
+
     }
 }
