@@ -5,10 +5,11 @@ import axios from "axios";
 import { Loans } from "./Loans";
 import { useOktaAuth } from '@okta/okta-react';
 import { SpinnerLoading } from "../Utils/SpinnerLoading";
+import { ExploreTopBooks } from "../HomePage/ExploreTopBooks";
 
 export const ShelfPage = () => {
 
-    const [loanedBooks, setLoanedBooks] = useState(null);
+    const [loanedBooks, setLoanedBooks] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [refreshBooks, setRefreshBooks] = useState(false);
@@ -16,7 +17,7 @@ export const ShelfPage = () => {
     const { authState } = useOktaAuth();
 
     function refreshShelf() {
-        setRefreshBooks(true);
+        setRefreshBooks(!refreshBooks);
     }
 
     useEffect(() => {
@@ -66,11 +67,20 @@ export const ShelfPage = () => {
                             (isLoading) &&
                             <SpinnerLoading />
                         }
+                        {
+                            (!isLoading && loanedBooks.length === 0) && (
+                                <div>
+                                    <p className='col-md-8 fs-4'>You have no books checked out.</p>
+                                    <ExploreTopBooks />
+                                </div>
+
+                            )
+                        }
                         <div className='row row-cols-1 row-cols-md-4 g-4'>
                             {
-                                (!isLoading) && (
+                                (!isLoading && loanedBooks.length > 0) && (
                                     loanedBooks.map(loanedBook => (
-                                        <Loans key={loanedBook.book.id} loanedBook={loanedBook} refreshShelf={refreshShelf}/>
+                                        <Loans key={loanedBook.book.id} loanedBook={loanedBook} refreshShelf={refreshShelf} />
                                     ))
                                 )
                             }
