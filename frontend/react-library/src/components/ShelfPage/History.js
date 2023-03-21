@@ -50,6 +50,9 @@ export const History = ({ book }) => {
                         <p className='card-text'>
                             {book.description}
                         </p>
+                        <hr />
+                        <p className='card-text'> Checked out on: {book.checkoutDate}</p>
+                        <p className='card-text'> Returned on: {book.returnedDate}</p>
                     </div>
                 </div>
             </div>
