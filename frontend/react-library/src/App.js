@@ -10,6 +10,7 @@ import { OktaAuth, toRelativeUrl } from '@okta/okta-auth-js';
 import { Security, LoginCallback } from '@okta/okta-react';
 import LoginWidget from './Auth/LoginWidget';
 import { ShelfPage } from './components/ShelfPage/ShelfPage';
+import { Messages } from './components/LibraryServices/Messages';
 import { RequiredAuth } from './Auth/SecureRouteAuth';
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
             <Route path="/home" element={<HomePage />} />
             <Route path="/searchbooks" element={<SearchBooksPage />} />
             <Route path="/books/checkout/:id" element={<BookCheckoutPage />} />
+            <Route path="/messages" element={<Messages />} />
             <Route path="/login" element={<LoginWidget config={oktaConfig} />} />
             <Route path="login/callback" element={<LoginCallback loadingElement={<SpinnerLoading />} />} />
             <Route path="/bookshelf" element={<RequiredAuth />}>
