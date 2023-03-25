@@ -10,7 +10,7 @@ This project is a web-based library application that allows users to log in, vie
 
 ## Installation
 
-1. Clone the repository using `git clone https://github.com/username/library-app.git`.
+1. Clone the repository using `git clone https://github.com/iAMSagar44/library-app.git`.
 2. Navigate to the project directory using `cd library-app`.
 3. Start the MySQL Docker container using the following command:
 
