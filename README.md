@@ -19,7 +19,7 @@ This project is a web-based library application that allows users to log in, vie
     ```
 
 4. Navigate to the `backend` directory and run the Spring Boot application using `./mvnw spring-boot:run`.
-5. Navigate to the `frontend` directory and install the dependencies using `npm install`.
+5. Navigate to the `frontend/react-library` directory and install the dependencies using `npm install`.
 6. Start the React application using `npm start`.
 
 ## Configuration
