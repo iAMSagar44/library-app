@@ -8,8 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class MessageService {
 
@@ -27,5 +25,13 @@ public class MessageService {
     public Page<Messages> retrieveMessages(String userEmail, int page, int size){
         PageRequest pr = PageRequest.of(page, size);
         return messagesRepository.findByUserEmail(userEmail, pr);
+    }
+
+    public Page<Messages> retrieveOpenMessages(boolean closed, int page, int size){
+        PageRequest pr = PageRequest.of(page, size);
+        if(closed){
+            return messagesRepository.findByClosed(1,pr);
+        }
+        return messagesRepository.findByClosed(0,pr);
     }
 }
