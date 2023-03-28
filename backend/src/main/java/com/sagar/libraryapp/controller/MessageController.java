@@ -2,6 +2,7 @@ package com.sagar.libraryapp.controller;
 
 import com.sagar.libraryapp.model.Messages;
 import com.sagar.libraryapp.requestmodel.MessageRequest;
+import com.sagar.libraryapp.responsemodel.AdminResponse;
 import com.sagar.libraryapp.service.MessageService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -54,5 +55,18 @@ public class MessageController {
             throw new AccessDeniedException("User Not Allowed");
         }
         return messageService.retrieveOpenMessages(closed, page, size);
+    }
+    @PutMapping("/admin/api/messages/{id}")
+    public ResponseEntity<?> answerMessage(JwtAuthenticationToken jwtAuthenticationToken,
+                                           @PathVariable int id,
+                                           @RequestBody @Valid AdminResponse response){
+        var claims = jwtAuthenticationToken.getToken().getClaims();
+        LOGGER.info("User type is, {}, {}", claims.containsKey("userType"), claims.getOrDefault("userType", "user"));
+        if(!(claims.getOrDefault("userType", "user").equals("admin"))){
+            throw new AccessDeniedException("User Not Allowed");
+        }
+        var adminEmail = jwtAuthenticationToken.getToken().getSubject();
+        messageService.answerQuestion(id, adminEmail, response);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
