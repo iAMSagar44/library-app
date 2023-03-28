@@ -12,6 +12,7 @@ import LoginWidget from './Auth/LoginWidget';
 import { ShelfPage } from './components/ShelfPage/ShelfPage';
 import { Messages } from './components/LibraryServices/Messages';
 import { RequiredAuth } from './Auth/SecureRouteAuth';
+import { ManageLibraryPage } from './components/Admin/ManageLibraryPage';
 
 function App() {
 
@@ -47,12 +48,15 @@ function App() {
             <Route path="/home" element={<HomePage />} />
             <Route path="/searchbooks" element={<SearchBooksPage />} />
             <Route path="/books/checkout/:id" element={<BookCheckoutPage />} />
-            <Route path="/messages" element={<Messages />} />
             <Route path="/login" element={<LoginWidget config={oktaConfig} />} />
             <Route path="login/callback" element={<LoginCallback loadingElement={<SpinnerLoading />} />} />
             <Route path="/bookshelf" element={<RequiredAuth />}>
               <Route path="" element={<ShelfPage />} />
             </Route>
+            <Route path="/messages" element={<RequiredAuth />}>
+              <Route path="" element={<Messages />} />
+            </Route>
+            <Route path="/admin" element={<ManageLibraryPage />} />
           </Routes>
         </div>
         <Footer />

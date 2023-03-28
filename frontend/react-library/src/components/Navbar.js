@@ -40,9 +40,21 @@ export const Navbar = () => {
             <li className='nav-item'>
               <Link className='nav-link' to="/searchbooks">Search Books</Link>
             </li>
-            <li className='nav-item'>
-              <Link className='nav-link' to="/bookshelf">My Bookshelf</Link>
-            </li>
+            {
+              ((authState.isAuthenticated) && (authState?.accessToken?.claims.userType === undefined)) && (
+                <li className='nav-item'>
+                  <Link className='nav-link' to="/bookshelf">My Bookshelf</Link>
+                </li>
+              )
+            }
+
+            {
+              ((authState.isAuthenticated) && (authState?.accessToken?.claims.userType === "admin")) && (
+                <li className='nav-item'>
+                  <Link className='nav-link' to="/admin">Admin</Link>
+                </li>
+              )
+            }
           </ul>
           {
             (!authState.isAuthenticated) && (
