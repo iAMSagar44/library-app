@@ -6,10 +6,14 @@ import com.sagar.libraryapp.model.History;
 import com.sagar.libraryapp.responsemodel.LoanedBooks;
 import com.sagar.libraryapp.service.BookService;
 import com.sagar.libraryapp.service.LoanService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,5 +62,17 @@ public class BookController {
                                     @RequestParam(value = "size") int size) {
         String email = jwtAuthenticationToken.getToken().getSubject();
         return loanService.retrieveHistory(email, page, size);
+    }
+
+    @PostMapping("/admin/api/books")
+    public ResponseEntity<?> uploadBook(JwtAuthenticationToken jwtAuthenticationToken,
+                                        @Valid @RequestBody Book book){
+        var claims = jwtAuthenticationToken.getToken().getClaims();
+        LOGGER.info("User type is, {}, {}", claims.containsKey("userType"), claims.getOrDefault("userType", "user"));
+        if(!(claims.getOrDefault("userType", "user").equals("admin"))){
+            throw new AccessDeniedException("User Not Allowed");
+        }
+        bookService.saveBook(book);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

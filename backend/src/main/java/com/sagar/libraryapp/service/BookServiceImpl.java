@@ -59,4 +59,10 @@ public class BookServiceImpl implements BookService{
         LOGGER.info("The book id being retrieved is:: {}", id);
         return bookRepository.findById(id);
     }
+
+    @Override
+    public void saveBook(Book book) {
+        LOGGER.info("The book being saved is: {}", book.getTitle());
+        bookRepository.save(book);
+    }
 }

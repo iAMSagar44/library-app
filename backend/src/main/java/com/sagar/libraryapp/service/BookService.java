@@ -14,4 +14,6 @@ public interface BookService {
     Page<Book> getBooksByCategory(String category, int page, int size);
 
     Optional<Book> getBook(long id);
+
+    void saveBook(Book book);
 }
