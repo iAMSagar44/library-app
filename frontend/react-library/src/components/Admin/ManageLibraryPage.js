@@ -5,6 +5,7 @@ import { Pagination } from '../SearchBooks/Pagination';
 import { AdminResponse } from './AdminResponse';
 import axios from "axios";
 import { SpinnerLoading } from '../Utils/SpinnerLoading';
+import { AddNewBook } from './AddNewBook';
 
 export const ManageLibraryPage = () => {
 
@@ -86,7 +87,7 @@ export const ManageLibraryPage = () => {
                 <div className='tab-content' id='nav-tabContent'>
                     <div className='tab-pane fade show active' id='nav-add-book' role='tabpanel'
                         aria-labelledby='nav-add-book-tab'>
-                        Add new book
+                        <AddNewBook />
                     </div>
                     <div className='tab-pane fade' id='nav-quantity' role='tabpanel' aria-labelledby='nav-quantity-tab'>
                         Change Quantity
