@@ -3,6 +3,7 @@ package com.sagar.libraryapp.controller;
 import com.sagar.libraryapp.exception.BookNotFoundException;
 import com.sagar.libraryapp.model.Book;
 import com.sagar.libraryapp.model.History;
+import com.sagar.libraryapp.requestmodel.BookQuantityRequest;
 import com.sagar.libraryapp.responsemodel.LoanedBooks;
 import com.sagar.libraryapp.service.BookService;
 import com.sagar.libraryapp.service.LoanService;
@@ -74,5 +75,30 @@ public class BookController {
         }
         bookService.saveBook(book);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping("/admin/api/books/{id}/quantity")
+    public ResponseEntity<?> updateBookQuantity(JwtAuthenticationToken jwtAuthenticationToken,
+                                                @PathVariable long id,
+                                                @Valid BookQuantityRequest bookQuantityRequest){
+        var claims = jwtAuthenticationToken.getToken().getClaims();
+        LOGGER.info("User type is, {}, {}", claims.containsKey("userType"), claims.getOrDefault("userType", "user"));
+        if(!(claims.getOrDefault("userType", "user").equals("admin"))){
+            throw new AccessDeniedException("User Not Allowed");
+        }
+        bookService.updateQuantity(bookQuantityRequest, id);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @DeleteMapping("/admin/api/books/{id}")
+    public ResponseEntity<?> removeBook(JwtAuthenticationToken jwtAuthenticationToken,
+                                       @PathVariable long id){
+        var claims = jwtAuthenticationToken.getToken().getClaims();
+        LOGGER.info("User type is, {}, {}", claims.containsKey("userType"), claims.getOrDefault("userType", "user"));
+        if(!(claims.getOrDefault("userType", "user").equals("admin"))){
+            throw new AccessDeniedException("User Not Allowed");
+        }
+        bookService.deleteBook(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -1,7 +1,9 @@
 package com.sagar.libraryapp.service;
 
+import com.sagar.libraryapp.exception.BookNotFoundException;
 import com.sagar.libraryapp.model.Book;
 import com.sagar.libraryapp.repository.BookRepository;
+import com.sagar.libraryapp.requestmodel.BookQuantityRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,5 +66,24 @@ public class BookServiceImpl implements BookService{
     public void saveBook(Book book) {
         LOGGER.info("The book being saved is: {}", book.getTitle());
         bookRepository.save(book);
+    }
+
+    @Override
+    public void updateQuantity(BookQuantityRequest bookQuantityRequest, long id) {
+        Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book not found"));
+        if(bookQuantityRequest.subtract()){
+            book.setCopies(book.getCopies() - bookQuantityRequest.quantity());
+            book.setCopiesAvailable(book.getCopiesAvailable() - bookQuantityRequest.quantity());
+        } else {
+            book.setCopies(book.getCopies() + bookQuantityRequest.quantity());
+            book.setCopiesAvailable(book.getCopiesAvailable() + bookQuantityRequest.quantity());
+        }
+        bookRepository.save(book);
+    }
+
+    @Override
+    public void deleteBook(long id) {
+        bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book not found"));
+        bookRepository.deleteById(id);
     }
 }
