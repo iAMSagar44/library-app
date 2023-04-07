@@ -80,7 +80,7 @@ public class BookController {
     @PutMapping("/admin/api/books/{id}/quantity")
     public ResponseEntity<?> updateBookQuantity(JwtAuthenticationToken jwtAuthenticationToken,
                                                 @PathVariable long id,
-                                                @Valid BookQuantityRequest bookQuantityRequest){
+                                                @Valid @RequestBody BookQuantityRequest bookQuantityRequest){
         var claims = jwtAuthenticationToken.getToken().getClaims();
         LOGGER.info("User type is, {}, {}", claims.containsKey("userType"), claims.getOrDefault("userType", "user"));
         if(!(claims.getOrDefault("userType", "user").equals("admin"))){
