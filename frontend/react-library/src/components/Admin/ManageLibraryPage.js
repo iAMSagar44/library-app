@@ -6,6 +6,7 @@ import { AdminResponse } from './AdminResponse';
 import axios from "axios";
 import { SpinnerLoading } from '../Utils/SpinnerLoading';
 import { AddNewBook } from './AddNewBook';
+import { ManageBooks } from './ManageBooks';
 
 export const ManageLibraryPage = () => {
 
@@ -73,7 +74,7 @@ export const ManageLibraryPage = () => {
                             data-bs-target='#nav-quantity' type='button' role='tab' aria-controls='nav-quantity'
                             aria-selected='true'
                         >
-                            Change quantity
+                            Manage Books
                         </button>
                         <button className='nav-link' id='nav-messages-tab' data-bs-toggle='tab'
                             data-bs-target='#nav-messages' type='button' role='tab' aria-controls='nav-messages'
@@ -90,7 +91,7 @@ export const ManageLibraryPage = () => {
                         <AddNewBook />
                     </div>
                     <div className='tab-pane fade' id='nav-quantity' role='tabpanel' aria-labelledby='nav-quantity-tab'>
-                        Change Quantity
+                        <ManageBooks />
                     </div>
                     <div className='tab-pane fade' id='nav-messages' role='tabpanel' aria-labelledby='nav-messages-tab'>
                         {
