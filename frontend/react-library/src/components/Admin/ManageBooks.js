@@ -14,10 +14,15 @@ export const ManageBooks = () => {
     const [title, setTitle] = useState('');
     const [text, setText] = useState('');
     const [category, setCategory] = useState('Category');
+    const [refreshPage, setRefreshPage] = useState(0);
 
     const onPageChange = (pageNumber) => {
         console.log("The page being requested is ....", pageNumber);
         setCurrentPage(pageNumber);
+    }
+
+    const refreshBooks = () => {
+        setRefreshPage(refreshPage+1);
     }
 
     useEffect(() => {
@@ -40,7 +45,7 @@ export const ManageBooks = () => {
                 setIsLoading(false);
             });
         window.scroll(0, 0);
-    }, [currentPage, title, category]);
+    }, [currentPage, title, category, refreshPage]);
 
     const handleSubmit = () => {
         setTitle(text);
@@ -122,7 +127,8 @@ export const ManageBooks = () => {
                                 {
                                     (books.totalElements > 0) && (
                                         books.content.map(book => (
-                                            <ManageBook key={book.id} book={book} />
+                                            <ManageBook key={book.id} book={book} currentPage={currentPage} handlePageChange={onPageChange}
+                                                                      refreshBooks={refreshBooks} />
                                         ))
                                     )
                                 }

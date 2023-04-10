@@ -4,9 +4,10 @@ import axios from "axios";
 import { useOktaAuth } from '@okta/okta-react';
 import image from '../../Images/BooksImages/book-luv2code-1000.png';
 
-export const ManageBook = ({ book }) => {
+export const ManageBook = ({ book, currentPage, handlePageChange, refreshBooks }) => {
     const [quantity, setQuantity] = useState(0);
     const [submissionProcessed, setSubmissionProcessed] = useState(false);
+    const [deleteBookProcessed, setDeleteBookProcessed] = useState(false);
     const { authState } = useOktaAuth();
 
     function addCopies(bookID) {
@@ -37,6 +38,29 @@ export const ManageBook = ({ book }) => {
                     setQuantity(0);
                 });
         }
+    }
+
+    function deleteBook(bookID) {
+        console.log("Book to be deleted --> ", { bookID });
+        if (authState?.isAuthenticated) {
+            const config = {
+                headers: { Authorization: `Bearer ${authState.accessToken.accessToken}` }
+            };
+            axios.delete(`http://localhost:8080/admin/api/books/${bookID}`, config)
+                .then(response => {
+                    console.log("Book deleted successfully", response.data);
+                    setDeleteBookProcessed(true);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
+    }
+
+    function postDeleteBook() {
+        setDeleteBookProcessed(false);
+        handlePageChange(currentPage);
+        refreshBooks();
     }
 
     return (
@@ -100,7 +124,7 @@ export const ManageBook = ({ book }) => {
                             <button className="btn btn-primary" type="button" onClick={() => addCopies(book.id)}>Add</button>
                             <button className="btn btn-primary" type="button" onClick={() => subtractCopies(book.id)}>Subtract</button>
                         </div>
-                        <button className='btn btn-danger m-4'>Delete</button>
+                        <button className='btn btn-danger m-4' onClick={() => deleteBook(book.id)}>Delete</button>
                     </div>
                 </div>
             </div>
@@ -114,6 +138,19 @@ export const ManageBook = ({ book }) => {
                             Update successful.
                         </div>
                         <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" onClick={() => setSubmissionProcessed(false)}></button>
+                    </div>
+                )
+            }
+            {
+                (deleteBookProcessed) && (
+                    <div className="alert alert-success d-flex align-items-center alert-dismissible fade show mt-3" role="alert">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi flex-shrink-0 me-2 bi-check-circle-fill" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+                        </svg>
+                        <div>
+                            Book successfully deleted.
+                        </div>
+                        <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" onClick={postDeleteBook}></button>
                     </div>
                 )
             }
