@@ -12,5 +12,6 @@ public interface CheckoutRepository extends JpaRepository<Checkout, Long> {
     Optional<Checkout> findByUserEmailAndBookId(String userEmail, long bookId);
     int countByUserEmail(String UserEmail);
     List<Checkout> findByUserEmail(String userEmail);
+    int deleteByBookId(long bookId);
 
 }
